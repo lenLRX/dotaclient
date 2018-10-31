@@ -1,36 +1,8 @@
-# DotaClient on K8s
 
----
 
-DotaClient is a reinforcement learning system to train RL agents to play Dota 2 through self-play.
+## Dota has TensorFlow:
 
-* Video: [(Youtube) 1v1 self play, 9 Mar 2019, uses fountain for regen!](https://www.youtube.com/watch?v=hxitG142gsY).
-* Video: [(Youtube) 1v1 self play, 29 jan 2019](https://www.youtube.com/watch?v=6vgStVonDdA).
-
-This is built upon the [DotaService](https://github.com/TimZaman/DotaService) project, that exposes the game of Dota2 as a (grpc) service for synchronous play.
-
-<img src="dotaclient.png" alt="dotaclient schema" width="400"/>
-
-* Distributed Agents self-playing Dota 2.
-* Experience/Model Broker (rmq).
-* Distributed Optimizer (PyTorch)
-
-## Prerequisites
-
-* Kubeflow's [PyTorch Operator](https://github.com/kubeflow/pytorch-operator)
-* Kubernetes Cluster (e.g. GKE).
-* Build the [dota docker image](https://github.com/TimZaman/DotaService)
-* Build the [dotaservice docker image](https://github.com/TimZaman/DotaService)
-* Build the [rabbitmq docker image](docker/Dockerfile-rmq)
-* Install [ksonnet](https://ksonnet.io/)
-
-## Launch distributed dota training
-
-```bash
-cd ks-app
-ks show default  # Shows the full manifest
-ks param list  # Lists all parameters
-ks apply default  # Launches everything you need
-```
-
-Note: A typical job has 40 agents per optimizer. One optimizer does around 1000 steps/s.
+`cat Steam/steamapps/common/dota\ 2\ beta/game/dota/bin/linuxsteamrt64/libserver.so | grep -a tensorflow`
+(...)
+tf_server_client_connect_timeout_stf_server_client_read_timeout_stf_server_client_write_timeout_stf_server_stats_spew_interval_sdota_suggest_spew_pregame_itemsdota_suggest_spew_win_probabilitydota_suggest_spew_win_probability_chatdota_suggest_pregame_items_reductiondota_suggest_pregame_items_thresholddota_suggest_item_sequence_allow_thresholddota_suggest_item_sequence_threshold_startdota_suggest_item_sequence_threshold_fulldota_suggest_item_sequence_other_option_multiplierdota_suggest_item_sequence_dupe_multiplierdota_suggest_lane_trilane_penaltydota_suggest_win_probability_interval
+(...)
