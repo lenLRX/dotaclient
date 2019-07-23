@@ -227,7 +227,11 @@ local function think_fn()
     end
 
     if debug_text ~= nil then
-        DebugDrawText(8, 90, debug_text, 255, 255, 255)
+        local text_height = 140
+        if GetTeam() == TEAM_DIRE then
+            text_height = 500
+        end
+        DebugDrawText(8, text_height, debug_text, 255, 255, 255)
     end
 end
 
