@@ -78,7 +78,9 @@ local function act(action)
     elseif action.actionType == "DOTA_UNIT_ORDER_PICKUP_RUNE" then
         action_table[action.actionType] = {{action.pickUpRune.rune}, {0}}
     elseif action.actionType == "DOTA_UNIT_ORDER_PICKUP_ITEM" then
-        action_table[action.actionType] = {{action.pickUpItem.itemId}, {action.pickUpItem.location.x, action.pickUpItem.location.y, action.pickUpItem.location.z}, {0}}
+        action_table[action.actionType] = {{action.pickUpItem.itemId}, {action.pickUpItem.location.x, action.pickUpItem.location.y, action.pickUpItem.location.z}, {0} }
+    elseif action.actionType == "DOTA_UNIT_ORDER_PURCHASE_ITEM" then
+        action_table[action.actionType] = {{action.purchaseItem.item}, {action.purchaseItem.itemName}, {action.purchaseItem.unit}, {0} }
     elseif action.actionType == "DOTA_UNIT_ORDER_DROP_ITEM" then
         action_table[action.actionType] = {{action.dropItem.slot}, {action.dropItem.location.x, action.dropItem.location.y, 0,0}, {0}}
     elseif action.actionType == "ACTION_COURIER" then
@@ -108,7 +110,7 @@ local function get_new_actions(dota_time, player_id, curr_step)
             if err then
                 print("(lua) JSON Decode Error=", err, " at pos=", pos)
             end
-            
+
             if data.dotaTime == dota_time or data.dotaTime == nil then
                 -- Now find correponding player id
                 local actions = {}

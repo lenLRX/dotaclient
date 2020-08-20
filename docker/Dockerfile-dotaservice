@@ -1,4 +1,4 @@
-FROM dota:latest
+FROM dota:v20200505
 MAINTAINER Tim Zaman <timbobel@gmail.com>
 
 RUN apt-get -q update \

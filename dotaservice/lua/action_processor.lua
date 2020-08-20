@@ -26,6 +26,7 @@ local actionToggleAbility       = require( "bots/actions/toggle_ability" )
 
 local actionPickUpRune          = require( "bots/actions/pickup_rune" )
 local actionPickUpItem          = require( "bots/actions/pickup_item" )
+local actionPurchaseItem        = require( "bots/actions/purchase_item" )
 local actionDropItem            = require( "bots/actions/drop_item" )
 
 -- Hero Courier Functions
@@ -55,6 +56,7 @@ LookUpTable = {
     ['DOTA_UNIT_ORDER_CAST_TOGGLE'] = actionToggleAbility,
     ['DOTA_UNIT_ORDER_PICKUP_RUNE'] = actionPickUpRune,
     ['DOTA_UNIT_ORDER_PICKUP_ITEM'] = actionPickUpItem,
+    ['DOTA_UNIT_ORDER_PURCHASE_ITEM'] = actionPurchaseItem,
     ['DOTA_UNIT_ORDER_DROP_ITEM'] = actionDropItem,
     ['ACTION_COURIER'] = actionCourier,
 }

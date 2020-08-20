@@ -15,6 +15,10 @@ function AttackUnit:Call( hUnit, hTarget, bOnce, iType )
     end
     hTarget = GetBotByHandle(hTarget)
 
+    if type(hTarget) ~= 'table' then
+        do return end
+    end
+
     iType = iType[1]
  
     -- Note: we do not test if target can be attacked due 

@@ -428,6 +428,8 @@ class DotaService(DotaServiceBase):
                 os.kill(int(pid), signal.SIGKILL)
             except ProcessLookupError:
                 pass
+            except PermissionError:
+                pass
 
     async def clean_resources(self):
         """Clean resoruces.
@@ -451,6 +453,10 @@ class DotaService(DotaServiceBase):
         logger.debug('config=\n{}'.format(config))
 
         await self.clean_resources()
+
+        if config.host_mode != HOST_MODE_DEDICATED:
+            # for non dedicate server wait 5s before steam recognize dota2 dead
+            await asyncio.sleep(5)
 
         # Create a new dota game instance.
         self.dota_game = DotaGame(
@@ -487,10 +493,10 @@ class DotaService(DotaServiceBase):
         assert data[TEAM_RADIANT] is not None
         assert data[TEAM_DIRE] is not None
 
-        if data[TEAM_RADIANT].dota_time != data[TEAM_DIRE].dota_time:
-            raise ValueError(
-                'dota_time discrepancy in depleting initial worldstate queue.\n'
-                'radiant={:.2f}, dire={:.2f}'.format(data[TEAM_RADIANT].dota_time, data[TEAM_DIRE].dota_time))
+        #if data[TEAM_RADIANT].dota_time != data[TEAM_DIRE].dota_time:
+        #    raise ValueError(
+        #        'dota_time discrepancy in depleting initial worldstate queue.\n'
+        #        'radiant={:.2f}, dire={:.2f}'.format(data[TEAM_RADIANT].dota_time, data[TEAM_DIRE].dota_time))
 
         last_dota_time = data[TEAM_RADIANT].dota_time
 
@@ -529,19 +535,20 @@ class DotaService(DotaServiceBase):
 
         queue = self.dota_game.worldstate_queues[team_id]
 
-        try:
-            data = await asyncio.wait_for(queue.get(), timeout=self.observe_timeout)
-        except (asyncio.TimeoutError, asyncio.CancelledError):
-            # A timeout probably means the game is done
-            winstate = await self.dota_game.get_final_state_from_log()
-            await stream.send_message(Observation(
-                status=self.END_STATES[winstate],
-                team_id=team_id,
-                ))
-            return     
-
-        # Make sure indeed the queue is empty and we're entirely in sync.
-        assert queue.qsize() == 0
+        if queue.empty():
+            try:
+                data = await asyncio.wait_for(queue.get(), timeout=self.observe_timeout)
+            except (asyncio.TimeoutError, asyncio.CancelledError):
+                # A timeout probably means the game is done
+                winstate = await self.dota_game.get_final_state_from_log()
+                await stream.send_message(Observation(
+                    status=self.END_STATES[winstate],
+                    team_id=team_id,
+                    ))
+                return
+        else:
+            while not queue.empty():
+                data = queue.get_nowait()
 
         # Return the reponse.
         await stream.send_message(Observation(
